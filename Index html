@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Attendance - Maa Saraswati Educational Institute</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #4b0082;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #4b0082;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        button {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 12px;
+        }
+
+        .add-btn {
+            background: #4b0082;
+            color: white;
+            width: 100%;
+        }
+
+        .present-btn {
+            background: green;
+            color: white;
+        }
+
+        .absent-btn {
+            background: red;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #555;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #4b0082;
+            color: white;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #eee;
+        }
+
+        .box h3 {
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 22px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 7px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌸 Maa Saraswati Educational Institute</h1>
+    <p>Online Attendance System</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Student Details</h2>
+
+        <label>Student Name</label>
+        <input type="text" id="studentName" placeholder="Enter student name">
+
+        <label>Class</label>
+        <select id="studentClass">
+            <option value="">Select Class</option>
+            <option>Class 9</option>
+            <option>Class 10</option>
+            <option>Class 11</option>
+            <option>Class 12</option>
+        </select>
+
+        <button class="add-btn" onclick="addStudent()">
+            ➕ Add Student
+        </button>
+    </div>
+
+
+    <div class="card">
+        <h2>📋 Attendance</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="attendanceTable">
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="card">
+        <h2>📊 Attendance Summary</h2>
+
+        <div class="summary">
+
+            <div class="box">
+                <h3 id="totalStudents">0</h3>
+                <p>Total Students</p>
+            </div>
+
+            <div class="box">
+                <h3 id="presentStudents">0</h3>
+                <p>Present</p>
+            </div>
+
+            <div class="box">
+                <h3 id="absentStudents">0</h3>
+                <p>Absent</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    let students = [];
+
+    function addStudent() {
+
+        let name = document.getElementById("studentName").value;
+        let studentClass = document.getElementById("studentClass").value;
+
+        if (name === "" || studentClass === "") {
+            alert("Please enter student name and select class.");
+            return;
+        }
+
+        students.push({
+            name: name,
+            class: studentClass,
+            status: "Not Marked"
+        });
+
+        document.getElementById("studentName").value = "";
+        document.getElementById("studentClass").value = "";
+
+        displayStudents();
+    }
+
+
+    function displayStudents() {
+
+        let table = document.getElementById("attendanceTable");
+
+        table.innerHTML = "";
+
+        students.forEach(function(student, index) {
+
+            let row = `
+                <tr>
+
+                    <td>${index + 1}</td>
+
+                    <td>${student.name}</td>
+
+                    <td>${student.class}</td>
+
+                    <td class="status">
+                        ${student.status}
+                    </td>
+
+                    <td>
+
+                        <button class="present-btn"
+                        onclick="markPresent(${index})">
+                            Present
+                        </button>
+
+                        <button class="absent-btn"
+                        onclick="markAbsent(${index})">
+                            Absent
+                        </button>
+
+                        <button class="delete-btn"
+                        onclick="deleteStudent(${index})">
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+            table.innerHTML += row;
+        });
+
+        updateSummary();
+    }
+
+
+    function markPresent(index) {
+
+        students[index].status = "Present";
+
+        displayStudents();
+    }
+
+
+    function markAbsent(index) {
+
+        students[index].status = "Absent";
+
+        displayStudents();
+    }
+
+
+    function deleteStudent(index) {
+
+        students.splice(index, 1);
+
+        displayStudents();
+    }
+
+
+    function updateSummary() {
+
+        let total = students.length;
+
+        let present = students.filter(
+            student => student.status === "Present"
+        ).length;
+
+        let absent = students.filter(
+            student => student.status === "Absent"
+        ).length;
+
+        document.getElementById("totalStudents").innerText = total;
+
+        document.getElementById("presentStudents").innerText = present;
+
+        document.getElementById("absentStudents").innerText = absent;
+    }
+
+</script>
+
+</body>
+</html>
