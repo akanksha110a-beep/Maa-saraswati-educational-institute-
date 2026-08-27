@@ -1,1 +1,320 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crop Doctor - AI Crop Disease Detection</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f8f3;
+    color: #183b20;
+}
+
+header {
+    background: #238636;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    font-size: 32px;
+}
+
+header p {
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 700px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.upload-box {
+    border: 2px dashed #238636;
+    padding: 25px;
+    text-align: center;
+    border-radius: 15px;
+    background: #f7fff8;
+    margin-bottom: 20px;
+}
+
+#preview {
+    display: none;
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: #238636;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #176b29;
+}
+
+#result {
+    display: none;
+}
+
+.result-box {
+    background: #eef9ef;
+    padding: 18px;
+    border-radius: 12px;
+    line-height: 1.8;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌾 Crop Doctor</h1>
+    <p>AI Based Crop Disease Detection</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>🔍 Check Your Crop</h2>
+
+<label for="crop">Select Crop</label>
+
+<select id="crop">
+    <option value="">-- Select Crop --</option>
+    <option value="rice">Rice / धान</option>
+    <option value="wheat">Wheat / गेहूं</option>
+    <option value="tomato">Tomato / टमाटर</option>
+    <option value="potato">Potato / आलू</option>
+    <option value="maize">Maize / मक्का</option>
+    <option value="cotton">Cotton / कपास</option>
+</select>
+
+<div class="upload-box">
+
+<h3>📷 Upload Crop Photo</h3>
+
+<p style="margin:10px 0;">
+Take a clear photo of the leaf
+</p>
+
+<input
+    type="file"
+    id="imageInput"
+    accept="image/*"
+    capture="environment"
+>
+
+<img id="preview" alt="Crop Preview">
+
+</div>
+
+<button onclick="analyzeCrop()">
+🔍 Analyze Crop
+</button>
+
+</div>
+
+
+<div class="card" id="result">
+
+<h2>📋 Analysis Result</h2>
+
+<div class="result-box">
+
+<p>
+<strong>Crop:</strong>
+<span id="cropName"></span>
+</p>
+
+<p>
+<strong>Status:</strong>
+⚠️ Possible Problem Detected
+</p>
+
+<p>
+<strong>Possible Disease:</strong>
+<span id="disease"></span>
+</p>
+
+<p>
+<strong>Symptoms:</strong>
+<span id="symptoms"></span>
+</p>
+
+<p>
+<strong>Basic Care:</strong>
+<span id="solution"></span>
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 Crop Doctor | Farmer Support Project
+</footer>
+
+
+<script>
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (file) {
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            preview.src = event.target.result;
+            preview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+});
+
+
+function analyzeCrop() {
+
+    const crop = document.getElementById("crop").value;
+    const image = imageInput.files[0];
+
+    if (crop === "") {
+        alert("Please select a crop.");
+        return;
+    }
+
+    if (!image) {
+        alert("Please upload a crop photo.");
+        return;
+    }
+
+
+    const cropData = {
+
+        rice: {
+            disease: "Leaf Blast",
+            symptoms: "Brown or dark spots may appear on leaves.",
+            solution: "Monitor the crop regularly and consult an agriculture expert."
+        },
+
+        wheat: {
+            disease: "Leaf Rust",
+            symptoms: "Rust-colored spots may appear on leaves.",
+            solution: "Monitor the crop and seek expert advice."
+        },
+
+        tomato: {
+            disease: "Early Blight",
+            symptoms: "Dark spots may appear on older leaves.",
+            solution: "Remove severely affected plant material and consult an expert."
+        },
+
+        potato: {
+            disease: "Early Blight",
+            symptoms: "Dark lesions may develop on leaves.",
+            solution: "Maintain good crop hygiene and seek expert advice."
+        },
+
+        maize: {
+            disease: "Leaf Spot",
+            symptoms: "Small spots may develop on maize leaves.",
+            solution: "Monitor affected plants and consult an agriculture professional."
+        },
+
+        cotton: {
+            disease: "Leaf Spot",
+            symptoms: "Spots or discoloration may appear on leaves.",
+            solution: "Monitor the crop and get professional advice."
+        }
+
+    };
+
+
+    const data = cropData[crop];
+
+    document.getElementById("cropName").innerText =
+        crop.toUpperCase();
+
+    document.getElementById("disease").innerText =
+        data.disease;
+
+    document.getElementById("symptoms").innerText =
+        data.symptoms;
+
+    document.getElementById("solution").innerText =
+        data.solution;
+
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("result")
+        .scrollIntoView({ behavior: "smooth" });
+
+}
+
+</script>
+
+</body>
+  </html>
